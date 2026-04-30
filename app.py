@@ -122,7 +122,7 @@ elif item == "Item C: Água Tratada (2 LPs)":
 
     # Separação e Resultados[cite: 1]
     st.markdown("---")
-    st.subheader("--- RESULTADOS ITEM C ---")
+    st.subheader("RESULTADOS ITEM C")
     st.write(f"**Perda de carga total (Mista anterior):** {dc_misto:.2f} m")
     st.write(f"**Perda de carga total (Ajuste 350mm):** {dc_350:.2f} m")
     st.success(f"**Cota de partida real (LP Ajustada):** {lp2_inicio:.2f} m")
