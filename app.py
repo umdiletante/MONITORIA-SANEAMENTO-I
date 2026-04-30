@@ -33,7 +33,7 @@ if item == "Item A: Água Bruta":
     L, C, D = 1000.0, 130, 0.300
     delta_cont_succao = 1.0
     
-    delta_cont = (10.64 * L * (v_q1/1000)**1.85) / (C**1.85 * D**4.87)
+    delta_cont = (10.64 * L * (v_q1/1000)**1.85) / (C**1.85 * D**4.87) #
     hg = n_eta - n_succao
     hm = hg + delta_cont_succao + delta_cont # ~53.76m
     
@@ -51,13 +51,13 @@ if item == "Item A: Água Bruta":
     ax.grid(True, linestyle=':', alpha=0.6)
     ax.legend()
     
-    # O parâmetro use_container_width permite que o Streamlit ajuste e dê zoom na imagem[cite: 1]
-    st.pyplot(fig, use_container_width=True)
+    st.pyplot(fig, use_container_width=True) #
     
-  
     st.subheader("RESULTADOS ITEM A")
     st.write(f"**Vazão de Projeto (Q1):** {v_q1:.2f} l/s")
     st.write(f"**Perda de Carga Recalque (delta_cont):** {delta_cont:.2f} m")
+    st.write(f"**Cota de Início (Recalque):** {y_p[2]:.2f} m")
+    st.write(f"**Cota de Chegada (Reservatório):** {y_p[3]:.2f} m")
     st.success(f"**Altura Manométrica Total (Hm):** {hm:.2f} m")
 
 # ---------------------------------------------------------
@@ -70,9 +70,9 @@ elif item == "Item B: Água Tratada (3 LPs)":
     dist_x = np.array([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
     topo_y = np.array([807, 806, 800, 798, 802, 805, 803, 800, 795, 790, 787, 783, 780])
     
-    dc_300 = (10.64 * 1200 * (v_q2/1000)**1.85) / (130**1.85 * 0.30**4.87)
-    dc_250 = (10.64 * 1200 * (v_q2/1000)**1.85) / (130**1.85 * 0.25**4.87)
-    dc_misto = (dc_300/2) + (dc_250/2)
+    dc_300 = (10.64 * 1200 * (v_q2/1000)**1.85) / (130**1.85 * 0.30**4.87) #
+    dc_250 = (10.64 * 1200 * (v_q2/1000)**1.85) / (130**1.85 * 0.25**4.87) #
+    dc_misto = (dc_300/2) + (dc_250/2) #
     
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.plot(dist_x, topo_y, color='saddlebrown', label='Terreno', linewidth=2.5)
@@ -90,6 +90,8 @@ elif item == "Item B: Água Tratada (3 LPs)":
     st.subheader("RESULTADOS ITEM B")
     st.write(f"**Perda de Carga (300mm):** {dc_300:.2f} m")
     st.write(f"**Perda de Carga (250mm):** {dc_250:.2f} m")
+    st.write(f"**Cota de Início (LP Mista):** {lp_mista[0]:.2f} m")
+    st.write(f"**Cota de Chegada (Reservatório):** {lp_mista[-1]:.2f} m")
     st.success(f"**Cota de Partida Real (LP Mista):** {nivel_final + dc_misto:.2f} m")
 
 # ---------------------------------------------------------
@@ -102,25 +104,27 @@ elif item == "Item C: Água Tratada (2 LPs)":
     topo_y_c = np.array([807, 806, 800, 798, 802, 805, 803, 800, 795, 800, 795, 790, 780])
     dist_x = np.arange(0, 1300, 100)
     
-    dc_misto_ant = ((10.64 * 600 * (v_q2/1000)**1.85) / (130**1.85 * 0.30**4.87)) + ((10.64 * 600 * (v_q2/1000)**1.85) / (130**1.85 * 0.25**4.87))
-    dc_350 = (10.64 * 1200 * (v_q2/1000)**1.85) / (130**1.85 * 0.35**4.87)
+    dc_misto_ant = ((10.64 * 600 * (v_q2/1000)**1.85) / (130**1.85 * 0.30**4.87)) + ((10.64 * 600 * (v_q2/1000)**1.85) / (130**1.85 * 0.25**4.87)) #
+    dc_350 = (10.64 * 1200 * (v_q2/1000)**1.85) / (130**1.85 * 0.35**4.87) #
     
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.plot(dist_x, topo_y_c, color='black', label='Terreno (Cenário 2)', linewidth=2.5)
     
     lp1_inicio = nivel_final + dc_misto_ant
-    lp1_y = [lp1_inicio - (dc_misto_ant * (x/1200)) for x in dist_x] # Simplificado para visualização
+    lp1_y = [lp1_inicio - (dc_misto_ant * (x/1200)) for x in dist_x] #
     ax.plot(dist_x, lp1_y, color='lightcoral', linestyle='--', label='LP Mista Anterior')
     
-    ax.plot(dist_x, (nivel_final + dc_350) - (dc_350 * (dist_x/1200)), color='darkred', linewidth=2, label='LP Ajuste 350mm')
+    lp2_y = (nivel_final + dc_350) - (dc_350 * (dist_x/1200)) #
+    ax.plot(dist_x, lp2_y, color='darkred', linewidth=2, label='LP Ajuste 350mm')
     
     ax.set_ylim(770, 825)
     ax.legend()
     ax.grid(True, alpha=0.3)
     st.pyplot(fig, use_container_width=True)
     
-  
     st.subheader("RESULTADOS ITEM C")
     st.write(f"**Perda Mista Anterior:** {dc_misto_ant:.2f} m")
     st.write(f"**Perda Novo Diâmetro (350mm):** {dc_350:.2f} m")
+    st.write(f"**Cota de Início (LP 350mm):** {lp2_y[0]:.2f} m")
+    st.write(f"**Cota de Chegada (Reservatório):** {lp2_y[-1]:.2f} m")
     st.success(f"**Nova Cota de Partida:** {nivel_final + dc_350:.2f} m")
