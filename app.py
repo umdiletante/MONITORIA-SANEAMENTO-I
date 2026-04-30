@@ -52,30 +52,52 @@ if item == "Item A: Água Bruta":
 
 elif item == "Item B: Água Tratada (3 LPs)":
     st.header("Item B - Comparativo de Diâmetros (Cenário Q2)")
-    
+    st.markdown("Análise comparativa entre diâmetros constantes e a solução mista para o primeiro perfil de terreno.")
+
+    # --- PARÂMETROS ---
     nivel_eta = 810.0
     L_total = 1200.0
+    C = 130
+    vazao = v_q2 / 1000 # Vazão Q2 (53.33 l/s) convertida para m³/s
+
+    # Dados do terreno (Tabela Item B)
     dist_x = np.array([0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200])
     topo_y = np.array([807, 806, 800, 798, 802, 805, 803, 800, 795, 790, 787, 783, 780])
-    
-    # Perdas Totais
-    dc_300 = (10.64 * L_total * (v_q2/1000)**1.85) / (130**1.85 * 0.30**4.87)
-    dc_250 = (10.64 * L_total * (v_q2/1000)**1.85) / (130**1.85 * 0.25**4.87)
-    dc_misto = (dc_300/2) + (dc_250/2)
 
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.plot(dist_x, topo_y, color='saddlebrown', label='Terreno', linewidth=2)
-    ax.plot(dist_x, (nivel_eta + dc_300) - (dc_300 * (dist_x/1200)), 'skyblue', linestyle='--', label='LP 300mm')
-    ax.plot(dist_x, (nivel_eta + dc_250) - (dc_250 * (dist_x/1200)), 'royalblue', linestyle='--', label='LP 250mm')
-    
-    lp_mista = [(nivel_eta + dc_misto) - (dc_300/2 * (x/600)) if x <= 600 else (nivel_eta + dc_misto) - (dc_300/2 + (dc_250/2 * ((x-600)/600))) for x in dist_x]
-    ax.plot(dist_x, lp_mista, 'navy', linewidth=2, label='LP Mista (Gabarito)')
-    
+    # Cálculos de Perda de Carga Total (Delta_cont)
+    dc_300 = (10.64 * L_total * vazao**1.85) / (C**1.85 * 0.30**4.87)
+    dc_250 = (10.64 * L_total * vazao**1.85) / (C**1.85 * 0.25**4.87)
+    dc_misto = (dc_300 / 2) + (dc_250 / 2) # 600m de cada diâmetro
+
+    # --- PLOTAGEM ---
+    fig, ax = plt.subplots(figsize=(11, 5))
+    ax.plot(dist_x, topo_y, color='saddlebrown', label='Terreno', linewidth=2.5)
+    ax.fill_between(dist_x, 770, topo_y, color='saddlebrown', alpha=0.1)
+
+    # Plot das 3 LPs (Todas terminando em 810m)
+    ax.plot(dist_x, (nivel_eta + dc_300) - (dc_300 * (dist_x/L_total)), color='skyblue', linestyle='--', label='LP 1 (300mm)')
+    ax.plot(dist_x, (nivel_eta + dc_250) - (dc_250 * (dist_x/L_total)), color='royalblue', linestyle='--', label='LP 2 (250mm)')
+
+    # LP Mista (Paleta de azul escuro)
+    lp3_y = [(nivel_eta + dc_misto) - (dc_300/2 * (x/600)) if x <= 600 else (nivel_eta + dc_misto) - (dc_300/2 + (dc_250/2 * ((x-600)/600))) for x in dist_x]
+    ax.plot(dist_x, lp3_y, color='navy', linewidth=2, label='LP 3 (Mista 300/250mm)')
+
+    ax.set_title('Perfil Hidráulico Item B: Comparativo de 3 LPs', fontweight='bold')
+    ax.set_ylabel('Cota (m)')
+    ax.set_xlabel('Distância (m)')
+    ax.grid(True, alpha=0.2)
     ax.set_ylim(770, 825)
     ax.legend()
-    ax.grid(True, alpha=0.3)
+    
     st.pyplot(fig)
-    st.success(f"Cota de Partida Real (Mista): {nivel_eta + dc_misto:.2f} m")
+
+    # --- SEPARAÇÃO E RESULTADOS TEXTUAIS (IGUAL AO ITEM C) ---[cite: 1]
+    st.markdown("---")
+    st.subheader("--- RESULTADOS ITEM B ---")
+    st.write(f"**Perda de carga total (Somente 300mm):** {dc_300:.2f} m")
+    st.write(f"**Perda de carga total (Somente 250mm):** {dc_250:.2f} m")
+    st.write(f"**Perda de carga total (Solução Mista):** {dc_misto:.2f} m")
+    st.success(f"**Cota de partida real na ETA (LP Mista):** {nivel_eta + dc_misto:.2f} m")
 elif item == "Item C: Água Tratada (2 LPs)":
     st.header("Item C - Comparativo de 2 LPs (Cenário de Reanálise)")
     st.markdown("Análise da solução anterior aplicada a um novo perfil de terreno com ajuste de diâmetro.")
