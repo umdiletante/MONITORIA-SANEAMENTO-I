@@ -92,8 +92,7 @@ elif item == "Item B: Água Tratada (3 LPs)":
     st.pyplot(fig)
 
     # --- SEPARAÇÃO E RESULTADOS TEXTUAIS (IGUAL AO ITEM C) ---[cite: 1]
-    st.markdown("---")
-    st.subheader("--- RESULTADOS ITEM B ---")
+    st.subheader("RESULTADOS ITEM B")
     st.write(f"**Perda de carga total (Somente 300mm):** {dc_300:.2f} m")
     st.write(f"**Perda de carga total (Somente 250mm):** {dc_250:.2f} m")
     st.write(f"**Perda de carga total (Solução Mista):** {dc_misto:.2f} m")
